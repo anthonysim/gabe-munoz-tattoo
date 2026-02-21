@@ -15,6 +15,7 @@ const images: GalleryImage[] = Array.from({ length: 33 }, (_, i) => ({
 export function Portfolio() {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
   const touchStartX = useRef<number | null>(null)
+  const touchStartTime = useRef<number>(0)
   const slideRef = useRef<HTMLDivElement>(null)
 
   const openModal = (index: number) => setSelectedIndex(index)
@@ -45,6 +46,7 @@ export function Portfolio() {
 
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX
+    touchStartTime.current = Date.now()
     setSlide(0, false)
   }
 
@@ -53,28 +55,37 @@ export function Portfolio() {
     setSlide(e.touches[0].clientX - touchStartX.current, false)
   }
 
+  const slideToNew = (newIndex: number, isNext: boolean) => {
+    setSelectedIndex(newIndex)
+    setSlide(isNext ? window.innerWidth : -window.innerWidth, false)
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => setSlide(0, true))
+    })
+  }
+
   const handleTouchEnd = (e: React.TouchEvent) => {
     if (touchStartX.current === null || selectedIndex === null) return
     const diff = touchStartX.current - e.changedTouches[0].clientX
+    const velocity = Math.abs(diff) / (Date.now() - touchStartTime.current) // px/ms
 
-    if (Math.abs(diff) > 60) {
+    const isFastSwipe = velocity > 0.4
+    const isFarEnough = Math.abs(diff) > 60
+
+    if (isFastSwipe || isFarEnough) {
       const isNext = diff > 0
-      // Animate current image out
-      setSlide(isNext ? -window.innerWidth : window.innerWidth, true)
-      setTimeout(() => {
-        // Switch image and instantly place new one off-screen on the opposite side
-        const newIndex = isNext
-          ? (selectedIndex + 1) % images.length
-          : (selectedIndex - 1 + images.length) % images.length
-        setSelectedIndex(newIndex)
-        setSlide(isNext ? window.innerWidth : -window.innerWidth, false)
-        // Two rAFs to ensure the DOM has painted before we animate in
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => setSlide(0, true))
-        })
-      }, 300)
+      const newIndex = isNext
+        ? (selectedIndex + 1) % images.length
+        : (selectedIndex - 1 + images.length) % images.length
+
+      if (isFastSwipe) {
+        // Skip exit animation — switch immediately
+        slideToNew(newIndex, isNext)
+      } else {
+        // Slide current image out, then bring new one in
+        setSlide(isNext ? -window.innerWidth : window.innerWidth, true)
+        setTimeout(() => slideToNew(newIndex, isNext), 200)
+      }
     } else {
-      // Not enough drag — snap back to center
       setSlide(0, true)
     }
 
