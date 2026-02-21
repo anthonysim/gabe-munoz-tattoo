@@ -5,18 +5,10 @@ interface GalleryImage {
   alt: string
 }
 
-// TODO: Replace with actual photo filenames placed in public/portfolio/
-const images: GalleryImage[] = [
-  { src: '/portfolio/01.jpg', alt: 'Traditional tattoo' },
-  { src: '/portfolio/02.jpg', alt: 'Neo-traditional tattoo' },
-  { src: '/portfolio/03.jpg', alt: 'Traditional tattoo' },
-  { src: '/portfolio/04.jpg', alt: 'Neo-traditional tattoo' },
-  { src: '/portfolio/05.jpg', alt: 'Traditional tattoo' },
-  { src: '/portfolio/06.jpg', alt: 'Neo-traditional tattoo' },
-  { src: '/portfolio/07.jpg', alt: 'Traditional tattoo' },
-  { src: '/portfolio/08.jpg', alt: 'Neo-traditional tattoo' },
-  { src: '/portfolio/09.jpg', alt: 'Traditional tattoo' },
-]
+const images: GalleryImage[] = Array.from({ length: 33 }, (_, i) => ({
+  src: `/portfolio/${String(i + 1).padStart(2, '0')}.jpg`,
+  alt: 'Tattoo by Gabe Muñoz',
+}))
 
 export function Portfolio() {
   return (
@@ -37,23 +29,29 @@ export function Portfolio() {
           </div>
         </div>
 
-        {/* Masonry gallery — CSS columns */}
-        <div className="columns-2 md:columns-3 gap-3">
-          {images.map((image) => (
-            <div
-              key={image.src}
-              className="break-inside-avoid mb-3 group relative overflow-hidden"
-            >
-              <img
-                src={image.src}
-                alt={image.alt}
-                loading="lazy"
-                className="w-full block object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-              />
-              {/* Hover overlay */}
-              <div className="absolute inset-0 bg-gold/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            </div>
-          ))}
+        {/* Bento grid */}
+        <div
+          className="grid grid-cols-2 md:grid-cols-3 gap-2 grid-flow-dense"
+          style={{ gridAutoRows: '220px' }}
+        >
+          {images.map((image, index) => {
+            const isFeatured = index % 7 === 0
+            return (
+              <div
+                key={image.src}
+                className={`group relative overflow-hidden ${isFeatured ? 'col-span-2 row-span-2' : ''}`}
+              >
+                <img
+                  src={image.src}
+                  alt={image.alt}
+                  loading="lazy"
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.05]"
+                />
+                {/* Hover overlay */}
+                <div className="absolute inset-0 bg-gold/15 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              </div>
+            )
+          })}
         </div>
       </SectionWrapper>
     </div>
