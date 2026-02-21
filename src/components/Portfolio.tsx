@@ -16,7 +16,7 @@ export function Portfolio() {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
   const touchStartX = useRef<number | null>(null)
   const touchStartTime = useRef<number>(0)
-  const slideRef = useRef<HTMLDivElement>(null)
+  const stripRef = useRef<HTMLDivElement>(null)
 
   const openModal = (index: number) => setSelectedIndex(index)
   const closeModal = () => setSelectedIndex(null)
@@ -30,43 +30,40 @@ export function Portfolio() {
     })
   }
 
-  const setSlide = (x: number, animate: boolean) => {
-    if (!slideRef.current) return
-    slideRef.current.style.transition = animate
-      ? 'transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
-      : 'none'
-    slideRef.current.style.transform = `translateX(${x}px)`
-  }
-
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'ArrowLeft') navigate('prev')
     else if (e.key === 'ArrowRight') navigate('next')
     else if (e.key === 'Escape') closeModal()
   }
 
+  // Strip: [prev | current | next], starts offset so current is visible
+  // marginLeft: -100vw centers the strip on the "current" slot
+  // translateX moves the whole strip so adjacent images come into view
+
+  const setStrip = (x: number, animate: boolean, duration = 250) => {
+    if (!stripRef.current) return
+    stripRef.current.style.transition = animate
+      ? `transform ${duration}ms cubic-bezier(0.25, 0.46, 0.45, 0.94)`
+      : 'none'
+    stripRef.current.style.transform = `translateX(${x}px)`
+  }
+
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX
     touchStartTime.current = Date.now()
-    setSlide(0, false)
+    setStrip(0, false)
   }
 
   const handleTouchMove = (e: React.TouchEvent) => {
     if (touchStartX.current === null) return
-    setSlide(e.touches[0].clientX - touchStartX.current, false)
-  }
-
-  const slideToNew = (newIndex: number, isNext: boolean) => {
-    setSelectedIndex(newIndex)
-    setSlide(isNext ? window.innerWidth : -window.innerWidth, false)
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => setSlide(0, true))
-    })
+    // Move strip with finger — adjacent image naturally follows
+    setStrip(e.touches[0].clientX - touchStartX.current, false)
   }
 
   const handleTouchEnd = (e: React.TouchEvent) => {
     if (touchStartX.current === null || selectedIndex === null) return
     const diff = touchStartX.current - e.changedTouches[0].clientX
-    const velocity = Math.abs(diff) / (Date.now() - touchStartTime.current) // px/ms
+    const velocity = Math.abs(diff) / (Date.now() - touchStartTime.current)
 
     const isFastSwipe = velocity > 0.4
     const isFarEnough = Math.abs(diff) > 60
@@ -77,20 +74,28 @@ export function Portfolio() {
         ? (selectedIndex + 1) % images.length
         : (selectedIndex - 1 + images.length) % images.length
 
-      if (isFastSwipe) {
-        // Skip exit animation — switch immediately
-        slideToNew(newIndex, isNext)
-      } else {
-        // Slide current image out, then bring new one in
-        setSlide(isNext ? -window.innerWidth : window.innerWidth, true)
-        setTimeout(() => slideToNew(newIndex, isNext), 200)
-      }
+      // Animate strip to the adjacent slot, then update state and snap back
+      const duration = isFastSwipe ? 150 : 250
+      setStrip(isNext ? -window.innerWidth : window.innerWidth, true, duration)
+
+      setTimeout(() => {
+        setSelectedIndex(newIndex)
+        setStrip(0, false)
+      }, duration)
     } else {
-      setSlide(0, true)
+      // Not far enough — snap back to center
+      setStrip(0, true)
     }
 
     touchStartX.current = null
   }
+
+  const prevIndex = selectedIndex !== null
+    ? (selectedIndex - 1 + images.length) % images.length
+    : 0
+  const nextIndex = selectedIndex !== null
+    ? (selectedIndex + 1) % images.length
+    : 0
 
   return (
     <div className="bg-surface-alt">
@@ -147,7 +152,7 @@ export function Portfolio() {
           onTouchEnd={handleTouchEnd}
           tabIndex={-1}
         >
-          {/* Close button */}
+          {/* Close */}
           <button
             onClick={closeModal}
             className="absolute top-5 right-5 text-text-muted hover:text-gold transition-colors duration-200 z-10"
@@ -156,7 +161,7 @@ export function Portfolio() {
             <X size={28} strokeWidth={1.5} />
           </button>
 
-          {/* Prev button */}
+          {/* Prev */}
           <button
             onClick={(e) => { e.stopPropagation(); navigate('prev') }}
             className="absolute left-4 md:left-8 text-text-muted hover:text-gold transition-colors duration-200 z-10"
@@ -165,16 +170,33 @@ export function Portfolio() {
             <ChevronLeft size={36} strokeWidth={1.5} />
           </button>
 
-          {/* Image wrapper — this is what gets translated */}
-          <div ref={slideRef} onClick={(e) => e.stopPropagation()}>
-            <img
-              src={images[selectedIndex].src}
-              alt={images[selectedIndex].alt}
-              className="max-h-[90vh] max-w-[90vw] object-contain"
-            />
+          {/*
+            Three-image strip: [prev | current | next]
+            Width is 300vw; marginLeft shifts it so "current" (the middle slot) is centered.
+            Dragging translateX moves the whole strip — the adjacent image scrolls in naturally.
+          */}
+          <div
+            ref={stripRef}
+            className="flex items-center shrink-0"
+            style={{ width: '300vw', marginLeft: '-100vw' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {[prevIndex, selectedIndex, nextIndex].map((imgIdx, slot) => (
+              <div
+                key={slot}
+                className="shrink-0 flex items-center justify-center"
+                style={{ width: '100vw', height: '100vh' }}
+              >
+                <img
+                  src={images[imgIdx].src}
+                  alt={images[imgIdx].alt}
+                  className="max-h-[90vh] max-w-[90vw] object-contain"
+                />
+              </div>
+            ))}
           </div>
 
-          {/* Next button */}
+          {/* Next */}
           <button
             onClick={(e) => { e.stopPropagation(); navigate('next') }}
             className="absolute right-4 md:right-8 text-text-muted hover:text-gold transition-colors duration-200 z-10"
@@ -183,7 +205,7 @@ export function Portfolio() {
             <ChevronRight size={36} strokeWidth={1.5} />
           </button>
 
-          {/* Image counter */}
+          {/* Counter */}
           <p className="absolute bottom-5 left-1/2 -translate-x-1/2 font-body text-xs text-text-muted tracking-widest">
             {selectedIndex + 1} / {images.length}
           </p>
