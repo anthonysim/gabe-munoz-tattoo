@@ -1,16 +1,14 @@
-import { SectionWrapper } from './ui/SectionWrapper'
-
 export function About() {
   return (
-    <SectionWrapper>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 items-center">
+    <div className="min-h-screen flex items-center px-6 md:px-12 py-20">
+      <div className="max-w-7xl mx-auto w-full grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 items-center">
         {/* Photo */}
         <div className="relative w-fit mx-auto">
           <div className="border border-gold/30 overflow-hidden">
             <img
               src="/gabe.jpg"
               alt="Gabe Muñoz, tattoo artist"
-              className="max-h-144 w-auto block"
+              className="max-h-[75vh] w-auto block"
             />
           </div>
           {/* Decorative offset border */}
@@ -57,6 +55,6 @@ export function About() {
           </div>
         </div>
       </div>
-    </SectionWrapper>
+    </div>
   )
 }
