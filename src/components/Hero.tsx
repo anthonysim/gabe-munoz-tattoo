@@ -29,7 +29,7 @@ export function Hero() {
         </div>
 
         {/* Artist name */}
-        <h1 className="font-display font-black uppercase leading-none tracking-[0.15em] text-text mb-4"
+        <h1 className="font-display font-black uppercase leading-[1.15] tracking-[0.15em] text-text mb-4"
           style={{ fontSize: 'clamp(3rem, 10vw, 9rem)' }}
         >
           Gabe
@@ -38,7 +38,7 @@ export function Hero() {
         </h1>
 
         {/* Subtitle */}
-        <p className="font-body text-text-muted text-sm tracking-widest uppercase mt-6 mb-10">
+        <p className="font-body text-text-muted text-sm tracking-widest uppercase mt-2 mb-6">
           Tattoo Artist
         </p>
 
