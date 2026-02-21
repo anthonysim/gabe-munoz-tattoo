@@ -1,11 +1,11 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { Nav } from '#/components/Nav'
-import { Hero } from '#/components/Hero'
-import { About } from '#/components/About'
-import { Portfolio } from '#/components/Portfolio'
-import { Services } from '#/components/Services'
-import { Booking } from '#/components/Booking'
-import { Footer } from '#/components/Footer'
+import { Nav } from '@/components/Nav'
+import { Hero } from '@/components/Hero'
+import { About } from '@/components/About'
+import { Portfolio } from '@/components/Portfolio'
+import { Services } from '@/components/Services'
+import { Booking } from '@/components/Booking'
+import { Footer } from '@/components/Footer'
 
 export const Route = createFileRoute('/')({ component: App })
 
