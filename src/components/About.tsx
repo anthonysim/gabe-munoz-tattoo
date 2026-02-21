@@ -5,13 +5,12 @@ export function About() {
     <SectionWrapper>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 items-center">
         {/* Photo */}
-        <div className="relative">
+        <div className="relative w-fit mx-auto">
           <div className="border border-gold/30 overflow-hidden">
             <img
               src="/gabe.jpg"
               alt="Gabe Muñoz, tattoo artist"
-              className="w-full h-full object-cover grayscale"
-              style={{ aspectRatio: '3/4' }}
+              className="max-h-144 w-auto block"
             />
           </div>
           {/* Decorative offset border */}
