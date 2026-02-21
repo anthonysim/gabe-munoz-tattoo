@@ -15,36 +15,69 @@ const images: GalleryImage[] = Array.from({ length: 33 }, (_, i) => ({
 export function Portfolio() {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
   const touchStartX = useRef<number | null>(null)
+  const slideRef = useRef<HTMLDivElement>(null)
 
   const openModal = (index: number) => setSelectedIndex(index)
   const closeModal = () => setSelectedIndex(null)
 
-  const prev = () => {
-    if (selectedIndex === null) return
-    setSelectedIndex((selectedIndex - 1 + images.length) % images.length)
+  const navigate = (direction: 'prev' | 'next') => {
+    setSelectedIndex((i) => {
+      if (i === null) return null
+      return direction === 'next'
+        ? (i + 1) % images.length
+        : (i - 1 + images.length) % images.length
+    })
   }
 
-  const next = () => {
-    if (selectedIndex === null) return
-    setSelectedIndex((selectedIndex + 1) % images.length)
+  const setSlide = (x: number, animate: boolean) => {
+    if (!slideRef.current) return
+    slideRef.current.style.transition = animate
+      ? 'transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+      : 'none'
+    slideRef.current.style.transform = `translateX(${x}px)`
   }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'ArrowLeft') prev()
-    else if (e.key === 'ArrowRight') next()
+    if (e.key === 'ArrowLeft') navigate('prev')
+    else if (e.key === 'ArrowRight') navigate('next')
     else if (e.key === 'Escape') closeModal()
   }
 
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX
+    setSlide(0, false)
+  }
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return
+    setSlide(e.touches[0].clientX - touchStartX.current, false)
   }
 
   const handleTouchEnd = (e: React.TouchEvent) => {
-    if (touchStartX.current === null) return
+    if (touchStartX.current === null || selectedIndex === null) return
     const diff = touchStartX.current - e.changedTouches[0].clientX
-    if (Math.abs(diff) > 50) {
-      diff > 0 ? next() : prev()
+
+    if (Math.abs(diff) > 60) {
+      const isNext = diff > 0
+      // Animate current image out
+      setSlide(isNext ? -window.innerWidth : window.innerWidth, true)
+      setTimeout(() => {
+        // Switch image and instantly place new one off-screen on the opposite side
+        const newIndex = isNext
+          ? (selectedIndex + 1) % images.length
+          : (selectedIndex - 1 + images.length) % images.length
+        setSelectedIndex(newIndex)
+        setSlide(isNext ? window.innerWidth : -window.innerWidth, false)
+        // Two rAFs to ensure the DOM has painted before we animate in
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => setSlide(0, true))
+        })
+      }, 300)
+    } else {
+      // Not enough drag — snap back to center
+      setSlide(0, true)
     }
+
     touchStartX.current = null
   }
 
@@ -85,7 +118,6 @@ export function Portfolio() {
                   loading="lazy"
                   className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.05]"
                 />
-                {/* Hover overlay */}
                 <div className="absolute inset-0 bg-gold/15 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </button>
             )
@@ -96,10 +128,11 @@ export function Portfolio() {
       {/* Lightbox modal */}
       {selectedIndex !== null && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 overflow-hidden"
           onClick={closeModal}
           onKeyDown={handleKeyDown}
           onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
           tabIndex={-1}
         >
@@ -114,24 +147,25 @@ export function Portfolio() {
 
           {/* Prev button */}
           <button
-            onClick={(e) => { e.stopPropagation(); prev() }}
+            onClick={(e) => { e.stopPropagation(); navigate('prev') }}
             className="absolute left-4 md:left-8 text-text-muted hover:text-gold transition-colors duration-200 z-10"
             aria-label="Previous image"
           >
             <ChevronLeft size={36} strokeWidth={1.5} />
           </button>
 
-          {/* Image */}
-          <img
-            src={images[selectedIndex].src}
-            alt={images[selectedIndex].alt}
-            className="max-h-[90vh] max-w-[90vw] object-contain"
-            onClick={(e) => e.stopPropagation()}
-          />
+          {/* Image wrapper — this is what gets translated */}
+          <div ref={slideRef} onClick={(e) => e.stopPropagation()}>
+            <img
+              src={images[selectedIndex].src}
+              alt={images[selectedIndex].alt}
+              className="max-h-[90vh] max-w-[90vw] object-contain"
+            />
+          </div>
 
           {/* Next button */}
           <button
-            onClick={(e) => { e.stopPropagation(); next() }}
+            onClick={(e) => { e.stopPropagation(); navigate('next') }}
             className="absolute right-4 md:right-8 text-text-muted hover:text-gold transition-colors duration-200 z-10"
             aria-label="Next image"
           >
