@@ -31,26 +31,27 @@ export function About() {
             <span className="text-gold/50 text-xs">✦</span>
           </div>
 
-          <div className="space-y-5 text-text-muted font-body text-sm leading-relaxed">
+          <div className="space-y-5 text-text-muted font-body text-base leading-relaxed">
             <p>
-              With a deep respect for the history and craft of tattooing, Gabe Muñoz
-              specializes in traditional and neo-traditional work — bold outlines, rich
-              saturation, and timeless imagery that holds up for decades.
+              With a deep respect for the history and craft of tattooing, Gabe
+              Muñoz specializes in traditional and neo-traditional work — bold
+              outlines, rich saturation, and timeless imagery that holds up for
+              decades.
             </p>
             <p>
-              Every piece is designed custom for the individual. Whether it's a classic
-              American traditional eagle, a neo-trad floral sleeve, or a bold Japanese-inspired
-              composition, Gabe brings the same dedication to linework and color theory
-              that defines lasting tattoos.
+              Every piece is designed custom for the individual. Whether it's a
+              classic American traditional eagle, a neo-trad floral sleeve, or a
+              bold Japanese-inspired composition, Gabe brings the same
+              dedication to linework and color theory that defines lasting
+              tattoos.
             </p>
             <p>
               Based out of{' '}
               <span className="text-text">
-                {/* TODO: Replace with actual city */}
-                [City, State]
+                <strong>Fullerton, CA</strong>
               </span>
-              , Gabe takes a limited number of appointments each month to ensure each
-              client receives his full attention.
+              , Gabe takes a limited number of appointments each month to ensure
+              each client receives his full attention.
             </p>
           </div>
         </div>

@@ -8,10 +8,10 @@ const navLinks = [
 ]
 
 // TODO: Replace with actual values
-const INSTAGRAM_HANDLE = '@gabemunoz' // e.g. @gabemunoz_tattoo
-const INSTAGRAM_URL = 'https://instagram.com/gabemunoz'
+const INSTAGRAM_HANDLE = '@munozgabe'
+const INSTAGRAM_URL = 'https://instagram.com/munozgabe'
 const EMAIL = 'hello@gabemunoz.com'
-const LOCATION = '[City, State]'
+const LOCATION = 'Fullerton, CA'
 
 export function Footer() {
   const year = new Date().getFullYear()
