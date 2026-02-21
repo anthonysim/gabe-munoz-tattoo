@@ -9,7 +9,7 @@ export function About() {
           <div className="border border-gold/30 overflow-hidden">
             <img
               src="/gabe.jpg"
-              alt="Gabe Munoz, tattoo artist"
+              alt="Gabe Muñoz, tattoo artist"
               className="w-full h-full object-cover grayscale"
               style={{ aspectRatio: '3/4' }}
             />
@@ -25,7 +25,7 @@ export function About() {
           </p>
 
           <h2 className="font-display text-4xl md:text-5xl font-bold text-text uppercase tracking-wide leading-tight mb-6">
-            Gabe Munoz
+            Gabe Muñoz
           </h2>
 
           {/* Gold separator */}
@@ -36,7 +36,7 @@ export function About() {
 
           <div className="space-y-5 text-text-muted font-body text-sm leading-relaxed">
             <p>
-              With a deep respect for the history and craft of tattooing, Gabe Munoz
+              With a deep respect for the history and craft of tattooing, Gabe Muñoz
               specializes in traditional and neo-traditional work — bold outlines, rich
               saturation, and timeless imagery that holds up for decades.
             </p>

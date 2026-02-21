@@ -23,7 +23,7 @@ export function Footer() {
           {/* Brand */}
           <div>
             <p className="font-display text-gold text-sm tracking-[0.2em] uppercase font-semibold mb-3">
-              Gabe Munoz
+              Gabe Muñoz
             </p>
             <p className="font-body text-xs text-text-muted leading-relaxed">
               Traditional &amp; Neo-Traditional Tattoo Artist
@@ -80,10 +80,10 @@ export function Footer() {
         {/* Bottom bar */}
         <div className="border-t border-border pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="font-body text-xs text-text-muted">
-            &copy; {year} Gabe Munoz. All rights reserved.
+            &copy; {year} Gabe Muñoz. All rights reserved.
           </p>
           <p className="font-body text-xs text-text-muted/50">
-            All artwork &copy; Gabe Munoz. Do not reproduce without permission.
+            All artwork &copy; Gabe Muñoz. Do not reproduce without permission.
           </p>
         </div>
       </div>

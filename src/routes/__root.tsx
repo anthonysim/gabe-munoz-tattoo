@@ -15,12 +15,12 @@ export const Route = createRootRoute({
         content: 'width=device-width, initial-scale=1',
       },
       {
-        title: 'Gabe Munoz | Traditional Tattoo Artist',
+        title: 'Gabe Muñoz | Traditional Tattoo Artist',
       },
       {
         name: 'description',
         content:
-          'Traditional and neo-traditional tattoo art by Gabe Munoz. Book a consultation today.',
+          'Traditional and neo-traditional tattoo art by Gabe Muñoz. Book a consultation today.',
       },
     ],
     links: [

@@ -34,7 +34,7 @@ export function Hero() {
         >
           Gabe
           <br />
-          Munoz
+          Muñoz
         </h1>
 
         {/* Subtitle */}

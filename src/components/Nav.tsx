@@ -19,7 +19,7 @@ export function Nav() {
           href="#"
           className="font-display text-gold text-sm tracking-[0.2em] uppercase font-semibold"
         >
-          Gabe Munoz
+          Gabe Muñoz
         </a>
 
         {/* Desktop links */}
