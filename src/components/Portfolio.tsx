@@ -1,3 +1,5 @@
+import { useState } from 'react'
+import { X, ChevronLeft, ChevronRight } from 'lucide-react'
 import { SectionWrapper } from './ui/SectionWrapper'
 
 interface GalleryImage {
@@ -11,6 +13,27 @@ const images: GalleryImage[] = Array.from({ length: 33 }, (_, i) => ({
 }))
 
 export function Portfolio() {
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
+
+  const openModal = (index: number) => setSelectedIndex(index)
+  const closeModal = () => setSelectedIndex(null)
+
+  const prev = () => {
+    if (selectedIndex === null) return
+    setSelectedIndex((selectedIndex - 1 + images.length) % images.length)
+  }
+
+  const next = () => {
+    if (selectedIndex === null) return
+    setSelectedIndex((selectedIndex + 1) % images.length)
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'ArrowLeft') prev()
+    else if (e.key === 'ArrowRight') next()
+    else if (e.key === 'Escape') closeModal()
+  }
+
   return (
     <div className="bg-surface-alt">
       <SectionWrapper>
@@ -37,9 +60,10 @@ export function Portfolio() {
           {images.map((image, index) => {
             const isFeatured = index % 7 === 0
             return (
-              <div
+              <button
                 key={image.src}
-                className={`group relative overflow-hidden ${isFeatured ? 'col-span-2 row-span-2' : ''}`}
+                onClick={() => openModal(index)}
+                className={`group relative overflow-hidden cursor-pointer ${isFeatured ? 'col-span-2 row-span-2' : ''}`}
               >
                 <img
                   src={image.src}
@@ -49,11 +73,61 @@ export function Portfolio() {
                 />
                 {/* Hover overlay */}
                 <div className="absolute inset-0 bg-gold/15 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              </div>
+              </button>
             )
           })}
         </div>
       </SectionWrapper>
+
+      {/* Lightbox modal */}
+      {selectedIndex !== null && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90"
+          onClick={closeModal}
+          onKeyDown={handleKeyDown}
+          tabIndex={-1}
+        >
+          {/* Close button */}
+          <button
+            onClick={closeModal}
+            className="absolute top-5 right-5 text-text-muted hover:text-gold transition-colors duration-200 z-10"
+            aria-label="Close"
+          >
+            <X size={28} strokeWidth={1.5} />
+          </button>
+
+          {/* Prev button */}
+          <button
+            onClick={(e) => { e.stopPropagation(); prev() }}
+            className="absolute left-4 md:left-8 text-text-muted hover:text-gold transition-colors duration-200 z-10"
+            aria-label="Previous image"
+          >
+            <ChevronLeft size={36} strokeWidth={1.5} />
+          </button>
+
+          {/* Image */}
+          <img
+            src={images[selectedIndex].src}
+            alt={images[selectedIndex].alt}
+            className="max-h-[90vh] max-w-[90vw] object-contain"
+            onClick={(e) => e.stopPropagation()}
+          />
+
+          {/* Next button */}
+          <button
+            onClick={(e) => { e.stopPropagation(); next() }}
+            className="absolute right-4 md:right-8 text-text-muted hover:text-gold transition-colors duration-200 z-10"
+            aria-label="Next image"
+          >
+            <ChevronRight size={36} strokeWidth={1.5} />
+          </button>
+
+          {/* Image counter */}
+          <p className="absolute bottom-5 left-1/2 -translate-x-1/2 font-body text-xs text-text-muted tracking-widest">
+            {selectedIndex + 1} / {images.length}
+          </p>
+        </div>
+      )}
     </div>
   )
 }
