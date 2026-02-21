@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { X, ChevronLeft, ChevronRight } from 'lucide-react'
 import { SectionWrapper } from './ui/SectionWrapper'
 
@@ -14,6 +14,7 @@ const images: GalleryImage[] = Array.from({ length: 33 }, (_, i) => ({
 
 export function Portfolio() {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
+  const touchStartX = useRef<number | null>(null)
 
   const openModal = (index: number) => setSelectedIndex(index)
   const closeModal = () => setSelectedIndex(null)
@@ -32,6 +33,19 @@ export function Portfolio() {
     if (e.key === 'ArrowLeft') prev()
     else if (e.key === 'ArrowRight') next()
     else if (e.key === 'Escape') closeModal()
+  }
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX
+  }
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return
+    const diff = touchStartX.current - e.changedTouches[0].clientX
+    if (Math.abs(diff) > 50) {
+      diff > 0 ? next() : prev()
+    }
+    touchStartX.current = null
   }
 
   return (
@@ -85,6 +99,8 @@ export function Portfolio() {
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/90"
           onClick={closeModal}
           onKeyDown={handleKeyDown}
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
           tabIndex={-1}
         >
           {/* Close button */}
