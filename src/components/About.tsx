@@ -1,0 +1,63 @@
+import { SectionWrapper } from './ui/SectionWrapper'
+
+export function About() {
+  return (
+    <SectionWrapper>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 items-center">
+        {/* Photo */}
+        <div className="relative">
+          <div className="border border-gold/30 overflow-hidden">
+            <img
+              src="/gabe.jpg"
+              alt="Gabe Munoz, tattoo artist"
+              className="w-full h-full object-cover grayscale"
+              style={{ aspectRatio: '3/4' }}
+            />
+          </div>
+          {/* Decorative offset border */}
+          <div className="absolute -bottom-4 -right-4 w-full h-full border border-gold/15 -z-10" />
+        </div>
+
+        {/* Bio */}
+        <div>
+          <p className="font-body text-gold text-xs tracking-[0.3em] uppercase mb-4">
+            About the Artist
+          </p>
+
+          <h2 className="font-display text-4xl md:text-5xl font-bold text-text uppercase tracking-wide leading-tight mb-6">
+            Gabe Munoz
+          </h2>
+
+          {/* Gold separator */}
+          <div className="flex items-center gap-3 mb-8">
+            <span className="h-px w-10 bg-gold/50" />
+            <span className="text-gold/50 text-xs">✦</span>
+          </div>
+
+          <div className="space-y-5 text-text-muted font-body text-sm leading-relaxed">
+            <p>
+              With a deep respect for the history and craft of tattooing, Gabe Munoz
+              specializes in traditional and neo-traditional work — bold outlines, rich
+              saturation, and timeless imagery that holds up for decades.
+            </p>
+            <p>
+              Every piece is designed custom for the individual. Whether it's a classic
+              American traditional eagle, a neo-trad floral sleeve, or a bold Japanese-inspired
+              composition, Gabe brings the same dedication to linework and color theory
+              that defines lasting tattoos.
+            </p>
+            <p>
+              Based out of{' '}
+              <span className="text-text">
+                {/* TODO: Replace with actual city */}
+                [City, State]
+              </span>
+              , Gabe takes a limited number of appointments each month to ensure each
+              client receives his full attention.
+            </p>
+          </div>
+        </div>
+      </div>
+    </SectionWrapper>
+  )
+}
