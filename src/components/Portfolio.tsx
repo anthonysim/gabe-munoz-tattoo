@@ -177,8 +177,8 @@ export function Portfolio() {
           */}
           <div
             ref={stripRef}
-            className="flex items-center shrink-0"
-            style={{ width: '300vw', marginLeft: '-100vw' }}
+            className="absolute top-0 flex"
+            style={{ width: '300vw', left: '-100vw', height: '100%' }}
             onClick={(e) => e.stopPropagation()}
           >
             {[prevIndex, selectedIndex, nextIndex].map((imgIdx, slot) => (
