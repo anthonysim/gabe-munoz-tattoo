@@ -1,5 +1,4 @@
 import { Pen, Zap, RefreshCw } from 'lucide-react'
-import { SectionWrapper } from './ui/SectionWrapper'
 import { Button } from './ui/Button'
 
 const services = [
@@ -25,7 +24,8 @@ const services = [
 
 export function Services() {
   return (
-    <SectionWrapper>
+    <div className="min-h-screen flex items-center px-6 md:px-12 py-20">
+    <div className="max-w-7xl mx-auto w-full">
       {/* Section header */}
       <div className="text-center mb-14">
         <p className="font-body text-gold text-xs tracking-[0.3em] uppercase mb-4">
@@ -68,6 +68,7 @@ export function Services() {
           Book a Consultation
         </Button>
       </div>
-    </SectionWrapper>
+    </div>
+    </div>
   )
 }
