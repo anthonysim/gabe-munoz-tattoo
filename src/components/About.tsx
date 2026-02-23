@@ -46,9 +46,13 @@ export function About() {
               tattoos.
             </p>
             <p>
-              Based out of{' '}
+              Working out of studios in{' '}
               <span className="text-text">
-                <strong>Fullerton, CA</strong>
+                <strong>Fullerton</strong>
+              </span>{' '}
+              and{' '}
+              <span className="text-text">
+                <strong>Encinitas, CA</strong>
               </span>
               , Gabe takes a limited number of appointments each month to ensure
               each client receives his full attention.

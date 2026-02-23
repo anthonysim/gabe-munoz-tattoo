@@ -11,7 +11,7 @@ const navLinks = [
 const INSTAGRAM_HANDLE = '@munozgabe'
 const INSTAGRAM_URL = 'https://instagram.com/munozgabe'
 const EMAIL = 'hello@gabemunoz.com'
-const LOCATION = 'Fullerton, CA'
+const LOCATION = 'Fullerton & Encinitas, CA'
 
 export function Footer() {
   const year = new Date().getFullYear()
