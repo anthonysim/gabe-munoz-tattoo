@@ -106,7 +106,7 @@ export function Portfolio() {
             The Work
           </p>
           <h2 className="font-display text-4xl md:text-5xl font-bold text-text uppercase tracking-wide">
-            Portfolio
+            Tattoos
           </h2>
           <div className="flex items-center justify-center gap-3 mt-6">
             <span className="h-px w-10 bg-gold/40" />

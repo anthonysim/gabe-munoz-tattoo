@@ -2,7 +2,7 @@ import { Instagram, Mail } from 'lucide-react'
 
 const navLinks = [
   { label: 'About', href: '#about' },
-  { label: 'Portfolio', href: '#portfolio' },
+  { label: 'Tattoos', href: '#portfolio' },
   { label: 'Services', href: '#services' },
   { label: 'Book', href: '#booking' },
 ]
