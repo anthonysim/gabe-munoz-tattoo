@@ -9,17 +9,23 @@ const images = Array.from({ length: 14 }, (_, i) => ({
 export function Art() {
   const [selected, setSelected] = useState<number | null>(null)
   const touchStartX = useRef<number | null>(null)
+  const touchStartTime = useRef<number>(0)
+  const stripRef = useRef<HTMLDivElement>(null)
 
   const open = (i: number) => setSelected(i)
   const close = () => setSelected(null)
 
-  const prev = useCallback(() => {
-    setSelected((s) => (s === null ? null : (s - 1 + images.length) % images.length))
+  const navigate = useCallback((direction: 'prev' | 'next') => {
+    setSelected((s) => {
+      if (s === null) return null
+      return direction === 'next'
+        ? (s + 1) % images.length
+        : (s - 1 + images.length) % images.length
+    })
   }, [])
 
-  const next = useCallback(() => {
-    setSelected((s) => (s === null ? null : (s + 1) % images.length))
-  }, [])
+  const prev = useCallback(() => navigate('prev'), [navigate])
+  const next = useCallback(() => navigate('next'), [navigate])
 
   useEffect(() => {
     if (selected === null) return
@@ -31,6 +37,53 @@ export function Art() {
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [selected, prev, next])
+
+  const setStrip = (x: number, animate: boolean, duration = 250) => {
+    if (!stripRef.current) return
+    stripRef.current.style.transition = animate
+      ? `transform ${duration}ms cubic-bezier(0.25, 0.46, 0.45, 0.94)`
+      : 'none'
+    stripRef.current.style.transform = `translateX(${x}px)`
+  }
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX
+    touchStartTime.current = Date.now()
+    setStrip(0, false)
+  }
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return
+    setStrip(e.touches[0].clientX - touchStartX.current, false)
+  }
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null || selected === null) return
+    const diff = touchStartX.current - e.changedTouches[0].clientX
+    const velocity = Math.abs(diff) / (Date.now() - touchStartTime.current)
+
+    const isFastSwipe = velocity > 0.4
+    const isFarEnough = Math.abs(diff) > 60
+
+    if (isFastSwipe || isFarEnough) {
+      const isNext = diff > 0
+      const newIndex = isNext
+        ? (selected + 1) % images.length
+        : (selected - 1 + images.length) % images.length
+
+      const duration = isFastSwipe ? 150 : 250
+      setStrip(isNext ? -window.innerWidth : window.innerWidth, true, duration)
+
+      setTimeout(() => {
+        setSelected(newIndex)
+        setStrip(0, false)
+      }, duration)
+    } else {
+      setStrip(0, true)
+    }
+
+    touchStartX.current = null
+  }
 
   return (
     <div className="min-h-screen flex items-center px-6 md:px-12 py-20">
@@ -72,8 +125,11 @@ export function Art() {
       {/* Lightbox */}
       {selected !== null && (
         <div
-          className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center"
+          className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center overflow-hidden"
           onClick={close}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
         >
           {/* Close */}
           <button
@@ -81,13 +137,8 @@ export function Art() {
             className="absolute top-5 right-5 text-text-muted hover:text-gold transition-colors duration-200 z-10"
             aria-label="Close"
           >
-            <X size={24} />
+            <X size={28} strokeWidth={1.5} />
           </button>
-
-          {/* Counter */}
-          <span className="absolute top-5 left-1/2 -translate-x-1/2 font-body text-xs tracking-widest text-text-muted">
-            {selected + 1} / {images.length}
-          </span>
 
           {/* Prev */}
           <button
@@ -95,27 +146,33 @@ export function Art() {
             className="absolute left-4 md:left-8 text-text-muted hover:text-gold transition-colors duration-200 z-10"
             aria-label="Previous"
           >
-            <ChevronLeft size={32} />
+            <ChevronLeft size={36} strokeWidth={1.5} />
           </button>
 
-          {/* Image */}
+          {/* Three-image strip: [prev | current | next] */}
           <div
-            className="max-w-[90vw] max-h-[90vh] flex items-center justify-center"
+            ref={stripRef}
+            className="absolute top-0 flex"
+            style={{ width: '300vw', left: '-100vw', height: '100%' }}
             onClick={(e) => e.stopPropagation()}
-            onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX }}
-            onTouchEnd={(e) => {
-              if (touchStartX.current === null) return
-              const dx = e.changedTouches[0].clientX - touchStartX.current
-              if (Math.abs(dx) > 50) dx < 0 ? next() : prev()
-              touchStartX.current = null
-            }}
           >
-            <img
-              key={selected}
-              src={images[selected].src}
-              alt={images[selected].alt}
-              className="max-w-[90vw] max-h-[90vh] object-contain"
-            />
+            {[
+              (selected - 1 + images.length) % images.length,
+              selected,
+              (selected + 1) % images.length,
+            ].map((imgIdx, slot) => (
+              <div
+                key={slot}
+                className="shrink-0 flex items-center justify-center"
+                style={{ width: '100vw', height: '100vh' }}
+              >
+                <img
+                  src={images[imgIdx].src}
+                  alt={images[imgIdx].alt}
+                  className="max-h-[90vh] max-w-[90vw] object-contain"
+                />
+              </div>
+            ))}
           </div>
 
           {/* Next */}
@@ -124,8 +181,13 @@ export function Art() {
             className="absolute right-4 md:right-8 text-text-muted hover:text-gold transition-colors duration-200 z-10"
             aria-label="Next"
           >
-            <ChevronRight size={32} />
+            <ChevronRight size={36} strokeWidth={1.5} />
           </button>
+
+          {/* Counter */}
+          <p className="absolute bottom-5 left-1/2 -translate-x-1/2 font-body text-xs tracking-widest text-text-muted">
+            {selected + 1} / {images.length}
+          </p>
         </div>
       )}
     </div>
