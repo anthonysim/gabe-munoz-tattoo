@@ -11,9 +11,20 @@ export function Art() {
   const touchStartX = useRef<number | null>(null)
   const touchStartTime = useRef<number>(0)
   const stripRef = useRef<HTMLDivElement>(null)
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const liveIndexRef = useRef<number>(0)
 
-  const open = (i: number) => setSelected(i)
-  const close = () => setSelected(null)
+  const open = (i: number) => {
+    liveIndexRef.current = i
+    setSelected(i)
+  }
+  const close = () => {
+    if (timeoutRef.current !== null) {
+      clearTimeout(timeoutRef.current)
+      timeoutRef.current = null
+    }
+    setSelected(null)
+  }
 
   const navigate = useCallback((direction: 'prev' | 'next') => {
     setSelected((s) => {
@@ -47,6 +58,12 @@ export function Art() {
   }
 
   const handleTouchStart = (e: React.TouchEvent) => {
+    if (timeoutRef.current !== null) {
+      clearTimeout(timeoutRef.current)
+      timeoutRef.current = null
+      setSelected(liveIndexRef.current)
+      setStrip(0, false)
+    }
     touchStartX.current = e.touches[0].clientX
     touchStartTime.current = Date.now()
     setStrip(0, false)
@@ -68,13 +85,16 @@ export function Art() {
     if (isFastSwipe || isFarEnough) {
       const isNext = diff > 0
       const newIndex = isNext
-        ? (selected + 1) % images.length
-        : (selected - 1 + images.length) % images.length
+        ? (liveIndexRef.current + 1) % images.length
+        : (liveIndexRef.current - 1 + images.length) % images.length
+
+      liveIndexRef.current = newIndex
 
       const duration = isFastSwipe ? 150 : 250
       setStrip(isNext ? -window.innerWidth : window.innerWidth, true, duration)
 
-      setTimeout(() => {
+      timeoutRef.current = setTimeout(() => {
+        timeoutRef.current = null
         setSelected(newIndex)
         setStrip(0, false)
       }, duration)

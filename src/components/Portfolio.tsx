@@ -17,9 +17,20 @@ export function Portfolio() {
   const touchStartX = useRef<number | null>(null)
   const touchStartTime = useRef<number>(0)
   const stripRef = useRef<HTMLDivElement>(null)
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const liveIndexRef = useRef<number>(0)
 
-  const openModal = (index: number) => setSelectedIndex(index)
-  const closeModal = () => setSelectedIndex(null)
+  const openModal = (index: number) => {
+    liveIndexRef.current = index
+    setSelectedIndex(index)
+  }
+  const closeModal = () => {
+    if (timeoutRef.current !== null) {
+      clearTimeout(timeoutRef.current)
+      timeoutRef.current = null
+    }
+    setSelectedIndex(null)
+  }
 
   const navigate = (direction: 'prev' | 'next') => {
     setSelectedIndex((i) => {
@@ -49,6 +60,12 @@ export function Portfolio() {
   }
 
   const handleTouchStart = (e: React.TouchEvent) => {
+    if (timeoutRef.current !== null) {
+      clearTimeout(timeoutRef.current)
+      timeoutRef.current = null
+      setSelectedIndex(liveIndexRef.current)
+      setStrip(0, false)
+    }
     touchStartX.current = e.touches[0].clientX
     touchStartTime.current = Date.now()
     setStrip(0, false)
@@ -71,19 +88,20 @@ export function Portfolio() {
     if (isFastSwipe || isFarEnough) {
       const isNext = diff > 0
       const newIndex = isNext
-        ? (selectedIndex + 1) % images.length
-        : (selectedIndex - 1 + images.length) % images.length
+        ? (liveIndexRef.current + 1) % images.length
+        : (liveIndexRef.current - 1 + images.length) % images.length
 
-      // Animate strip to the adjacent slot, then update state and snap back
+      liveIndexRef.current = newIndex
+
       const duration = isFastSwipe ? 150 : 250
       setStrip(isNext ? -window.innerWidth : window.innerWidth, true, duration)
 
-      setTimeout(() => {
+      timeoutRef.current = setTimeout(() => {
+        timeoutRef.current = null
         setSelectedIndex(newIndex)
         setStrip(0, false)
       }, duration)
     } else {
-      // Not far enough — snap back to center
       setStrip(0, true)
     }
 
