@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { X, ChevronLeft, ChevronRight } from 'lucide-react'
 import { SectionWrapper } from './ui/SectionWrapper'
 
@@ -40,6 +40,11 @@ export function Portfolio() {
         : (i - 1 + images.length) % images.length
     })
   }
+
+  useEffect(() => {
+    document.body.style.overflow = selectedIndex !== null ? 'hidden' : ''
+    return () => { document.body.style.overflow = '' }
+  }, [selectedIndex])
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'ArrowLeft') navigate('prev')

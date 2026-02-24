@@ -49,6 +49,11 @@ export function Art() {
     return () => window.removeEventListener('keydown', onKey)
   }, [selected, prev, next])
 
+  useEffect(() => {
+    document.body.style.overflow = selected !== null ? 'hidden' : ''
+    return () => { document.body.style.overflow = '' }
+  }, [selected])
+
   const setStrip = (x: number, animate: boolean, duration = 250) => {
     if (!stripRef.current) return
     stripRef.current.style.transition = animate
