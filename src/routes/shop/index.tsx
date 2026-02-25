@@ -12,9 +12,10 @@ type FilterCategory = ProductCategory | 'all'
 
 const filters: { label: string; value: FilterCategory }[] = [
   { label: 'All', value: 'all' },
-  { label: 'Prints', value: 'print' },
-  { label: 'Stickers', value: 'sticker' },
   { label: 'Apparel', value: 'apparel' },
+  { label: 'Stickers', value: 'sticker' },
+  { label: 'Pins', value: 'pin' },
+  { label: 'Art', value: 'print' },
 ]
 
 function ShopPage() {
@@ -66,7 +67,21 @@ function ShopPage() {
             </div>
 
             {/* Product grid */}
-            {filtered.length > 0 ? (
+            {activeFilter === 'print' ? (
+              <div className="flex flex-col items-center justify-center py-24 gap-4 text-center">
+                <div className="flex items-center gap-3">
+                  <span className="h-px w-10 bg-gold/40" />
+                  <span className="text-gold/40 text-xs">✦</span>
+                  <span className="h-px w-10 bg-gold/40" />
+                </div>
+                <p className="font-display text-lg font-semibold text-text uppercase tracking-widest">
+                  Coming Soon
+                </p>
+                <p className="font-body text-xs text-text-muted/60 max-w-xs leading-relaxed">
+                  Original art prints are on the way. Check back soon.
+                </p>
+              </div>
+            ) : filtered.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filtered.map((product) => (
                   <ProductCard key={product.id} product={product} />

@@ -13,6 +13,7 @@ const categoryLabels: Record<string, string> = {
   print: 'Print',
   sticker: 'Sticker',
   apparel: 'Apparel',
+  pin: 'Pin',
 }
 
 function ProductDetailPage() {
