@@ -3,8 +3,8 @@ import { MapPin } from 'lucide-react'
 import { SectionWrapper } from './ui/SectionWrapper'
 
 const LOCATIONS = [
-  { id: 'fullerton', label: 'Fullerton', state: 'CA', address: '521 N Harbor Blvd, Fullerton, CA 92832' },
-  { id: 'encinitas', label: 'Encinitas', state: 'CA', address: '454 N Coast Hwy 101, Encinitas, CA 92024' },
+  { id: 'fullerton', label: 'Fullerton', state: 'CA', street: '521 N Harbor Blvd', cityStateZip: 'Fullerton, CA 92832' },
+  { id: 'encinitas', label: 'Encinitas', state: 'CA', street: '454 N Coast Hwy 101', cityStateZip: 'Encinitas, CA 92024' },
 ] as const
 
 type LocationId = (typeof LOCATIONS)[number]['id']
@@ -61,7 +61,10 @@ export function Booking() {
                     </span>
                   </span>
                   <span className={`font-body text-xs transition-colors duration-300 normal-case tracking-wide ${isActive ? 'text-text-muted' : 'text-text-muted/50 group-hover:text-text-muted'}`}>
-                    {loc.address}
+                    {loc.street}
+                  </span>
+                  <span className={`font-body text-xs transition-colors duration-300 normal-case tracking-wide ${isActive ? 'text-text-muted' : 'text-text-muted/50 group-hover:text-text-muted'}`}>
+                    {loc.cityStateZip}
                   </span>
                 </span>
               </button>
@@ -83,7 +86,8 @@ export function Booking() {
                     <p className="font-body text-xs tracking-[0.3em] uppercase text-gold/60">
                       {loc?.label}, {loc?.state}
                     </p>
-                    <p className="font-body text-text-muted text-xs">{loc?.address}</p>
+                    <p className="font-body text-text-muted text-xs">{loc?.street}</p>
+                    <p className="font-body text-text-muted text-xs">{loc?.cityStateZip}</p>
                     <p className="font-body text-text-muted/50 text-sm mt-2">
                       Calendar coming soon
                     </p>
