@@ -1,10 +1,11 @@
 import { Instagram, Mail } from 'lucide-react'
+import { Link } from '@tanstack/react-router'
 
 const navLinks = [
-  { label: 'About', href: '#about' },
-  { label: 'Tattoos', href: '#portfolio' },
-  { label: 'Services', href: '#services' },
-  { label: 'Book', href: '#booking' },
+  { label: 'About', href: '/#about' },
+  { label: 'Tattoos', href: '/#portfolio' },
+  { label: 'Services', href: '/#services' },
+  { label: 'Book', href: '/#booking' },
 ]
 
 // TODO: Replace with actual values
@@ -48,6 +49,14 @@ export function Footer() {
                   </a>
                 </li>
               ))}
+              <li>
+                <Link
+                  to="/shop"
+                  className="font-body text-xs text-text-muted hover:text-gold transition-colors duration-200"
+                >
+                  Shop
+                </Link>
+              </li>
             </ul>
           </div>
 
