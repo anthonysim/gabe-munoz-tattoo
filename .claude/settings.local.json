@@ -1,14 +1,12 @@
 {
+  "includeCoAuthoredBy": true,
   "permissions": {
     "allow": [
-      "Bash(pnpm lint:*)",
-      "Bash(pnpm build:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(pnpm add stripe)",
+      "Bash(echo \"PATH: $PATH\")"
     ]
-  },
-  "git": {
-    "addCoAuthor": false
   }
 }
