@@ -11,8 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ShopIndexRouteImport } from './routes/shop/index'
-import { Route as ShopSuccessRouteImport } from './routes/shop/success'
 import { Route as ShopProductIdRouteImport } from './routes/shop/$productId'
+import { Route as ShopSuccessRouteImport } from './routes/shop/success'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -24,14 +24,14 @@ const ShopIndexRoute = ShopIndexRouteImport.update({
   path: '/shop/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ShopSuccessRoute = ShopSuccessRouteImport.update({
-  id: '/shop/success',
-  path: '/shop/success',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ShopProductIdRoute = ShopProductIdRouteImport.update({
   id: '/shop/$productId',
   path: '/shop/$productId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShopSuccessRoute = ShopSuccessRouteImport.update({
+  id: '/shop/success',
+  path: '/shop/success',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -85,18 +85,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ShopIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/shop/success': {
-      id: '/shop/success'
-      path: '/shop/success'
-      fullPath: '/shop/success'
-      preLoaderRoute: typeof ShopSuccessRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/shop/$productId': {
       id: '/shop/$productId'
       path: '/shop/$productId'
       fullPath: '/shop/$productId'
       preLoaderRoute: typeof ShopProductIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/shop/success': {
+      id: '/shop/success'
+      path: '/shop/success'
+      fullPath: '/shop/success'
+      preLoaderRoute: typeof ShopSuccessRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
